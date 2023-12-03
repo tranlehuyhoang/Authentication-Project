@@ -2,7 +2,10 @@ import { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { usernameValidate } from '../helpers/validate'
+import { useEffect, useState } from 'react';
 const Username = () => {
+    const [isLoading, setIsLoading] = useState(true);
+
     const navigate = useNavigate();
     const formik = useFormik({
         initialValues: {
@@ -14,18 +17,33 @@ const Username = () => {
         onSubmit: async values => {
             console.log(values)
             navigate('/password')
+            // window.location.href = '/password';
+
         }
     })
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
+
+        return () => clearTimeout(timer);
+    }, []);
     return (
 
         <>
             <Toaster position='top-center' reverseOrder={false}></Toaster>
-            <div className="preloader">
-                <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
-                    <path id="svg" d="M0,1005S175,995,500,995s500,5,500,5V0H0Z" />
-                </svg>
-                <h5 className="preloader-text">Loading</h5>
-            </div>
+            {isLoading ? (
+                <div className="preloader">
+                    <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                        <path id="svg" d="M0,1005S175,995,500,995s500,5,500,5V0H0Z" />
+                    </svg>
+                    <h5 className="preloader-text">Loading</h5>
+                </div>
+            ) : (
+                <h1></h1>
+
+            )}
 
 
             <section

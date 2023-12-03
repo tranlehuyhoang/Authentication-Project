@@ -1,6 +1,5 @@
 
 import express from 'express';
-
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 
@@ -10,7 +9,6 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-
 dotenv.config();
 connectDB();
 const port = 8000 || 3000;
@@ -25,14 +23,11 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(express.static(join(__dirname, 'upload')));
 
-// Serve static files from the 'client/dist' directory
+
 app.use(express.static(join(__dirname, 'frontend', 'dist')));
 
-// Route all other requests to the index.html file
-
 app.get('/', (req, res) => res.send('Server ready'));
-// app.use('/api/user', userRouter);
-// app.use('/api/message', messageRouter);
+
 app.use(notFound);
 app.use(errorHandler);
 

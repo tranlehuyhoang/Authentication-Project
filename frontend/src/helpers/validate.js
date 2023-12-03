@@ -2,7 +2,7 @@ import toast from 'react-hot-toast'
 
 export async function usernameValidate(values) {
     const errors = usernameVerify({}, values);
-    errors.exist = toast.error('User does not exist...!')
+    // errors.exist = toast.error('User does not exist...!')
     return errors;
 }
 
