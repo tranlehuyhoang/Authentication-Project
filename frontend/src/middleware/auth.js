@@ -4,7 +4,7 @@ import Password from '../screen/Password';
 
 export function AuthorizeUser({ children }) {
 
-    if (localStorage.getItem('token')) {
+    if (!localStorage.getItem('token')) {
 
         return children;
     } else {

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { resetPasswordValidation, usernameValidate } from '../helpers/validate'
 import { useEffect, useState } from 'react';
 const Reset = () => {
-    const [isLoading, setIsLoading] = useState(true);
+
 
     const navigate = useNavigate();
     const formik = useFormik({
@@ -21,28 +21,19 @@ const Reset = () => {
         }
     })
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1000);
 
-        return () => clearTimeout(timer);
-    }, []);
     return (
 
         <>
             <Toaster position='top-center' reverseOrder={false}></Toaster>
-            {isLoading ? (
-                <div className="preloader">
-                    <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
-                        <path id="svg" d="M0,1005S175,995,500,995s500,5,500,5V0H0Z" />
-                    </svg>
-                    <h5 className="preloader-text">Loading</h5>
-                </div>
-            ) : (
-                <h1></h1>
 
-            )}
+            <div className="preloader">
+                <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                    <path id="svg" d="M0,1005S175,995,500,995s500,5,500,5V0H0Z" />
+                </svg>
+                <h5 className="preloader-text">Loading</h5>
+            </div>
+
 
 
             <section
