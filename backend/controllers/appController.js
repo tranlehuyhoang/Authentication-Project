@@ -72,8 +72,15 @@ const login = asyncHandler(async (req, res) => {
                 username: user.username
             },
             process.env.JWT_SECRET,
-            { expiresIn: "24h" }
+            { expiresIn: "30d" }
         );
+
+        res.cookie('jwt', token, {
+            httpOnly: false,
+            secure: false, // Allow access from both HTTP and HTTPS
+            sameSite: 'strict', // Prevent CSRF attacks
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+        });
 
         return res.status(200).send({
             msg: "Login Successful",
@@ -112,8 +119,27 @@ const getUser = asyncHandler(async (req, res) => {
         return res.status(500).send({ error: "Internal Server Error" });
     }
 });
+const updateUser = asyncHandler(async (req, res) => {
+    try {
+        const { _id } = req.user;
+        console.log(req.user)
+        if (_id) {
+            const body = req.body;
+
+            // update the data
+            await UserModel.updateOne({ _id: _id }, body);
+
+            return res.status(200).send({ msg: "Record Updated...!" });
+        } else {
+            return res.status(401).send({ error: "User Not Found...!" });
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ error: "Internal Server Error" });
+    }
+});
 
 export {
-    register, login, getUser, verifyUser
+    register, login, getUser, verifyUser, updateUser
 }
 
