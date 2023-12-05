@@ -96,6 +96,7 @@ const login = asyncHandler(async (req, res) => {
 
 
 const getUser = asyncHandler(async (req, res) => {
+    console.log(req.app.locals.OTP)
     try {
         const { username } = req.params;
         console.log(username);
@@ -122,7 +123,7 @@ const getUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
     try {
         const { _id } = req.user;
-        console.log(req.user)
+        // console.log(req.user)
         if (_id) {
             const body = req.body;
 
@@ -138,8 +139,54 @@ const updateUser = asyncHandler(async (req, res) => {
         return res.status(500).send({ error: "Internal Server Error" });
     }
 });
+const generateOTP = asyncHandler(async (req, res) => {
+    req.app.locals.OTP = await otpGenerator.generate(6, { lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false })
+    res.status(201).send({ code: req.app.locals.OTP })
+});
+
+const verifyOTP = asyncHandler(async (req, res) => {
+
+    const { code } = req.query;
+    if (parseInt(req.app.locals.OTP) === parseInt(code)) {
+        req.app.locals.OTP = null; // reset the OTP value
+        req.app.locals.resetSession = true; // start session for reset password
+        return res.status(201).send({ msg: 'Verify Successsfully!' })
+    }
+    return res.status(400).send({ error: "Invalid OTP" });
+});
+
+const resetPassword = asyncHandler(async (req, res) => {
+    try {
+        if (!req.app.locals.resetSession) {
+            return res.status(440).send({ error: "Session expired!" });
+        }
+
+        const { username, password } = req.body;
+
+        try {
+            const user = await UserModel.findOne({ username });
+
+            if (!user) {
+                return res.status(404).send({ error: "Username not found" });
+            }
+
+            const hashedPassword = await bcrypt.hash(password, 10);
+            await UserModel.updateOne(
+                { username: user.username },
+                { password: hashedPassword }
+            );
+
+            req.app.locals.resetSession = false; // reset session
+            return res.status(201).send({ msg: "Record Updated...!" });
+        } catch (error) {
+            return res.status(500).send({ error: "Unable to update password" });
+        }
+    } catch (error) {
+        return res.status(401).send({ error });
+    }
+});
 
 export {
-    register, login, getUser, verifyUser, updateUser
+    register, login, getUser, verifyUser, updateUser, generateOTP, verifyOTP, resetPassword
 }
 
