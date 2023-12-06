@@ -3,9 +3,10 @@ import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { usernameValidate } from '../helpers/validate'
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
 const Username = () => {
+    const redux = useSelector((state) => state);
 
-    const navigate = useNavigate();
     const formik = useFormik({
         initialValues: {
             username: 'example123'
@@ -21,7 +22,10 @@ const Username = () => {
         }
     })
 
+    useEffect(() => {
 
+        console.log('redux', redux)
+    }, []);
     return (
 
         <>
