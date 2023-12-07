@@ -1,9 +1,10 @@
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 import { Link, useNavigate } from 'react-router-dom';
 import convertToBase64 from '../helpers/convert.js';
 import { usernameValidate, passwordValidate, registerValidation } from '../helpers/validate'
 import { useEffect, useState } from 'react';
+import { registerUser } from '../helpers/helper.js';
 const Register = () => {
     const [file, setFile] = useState()
     const navigate = useNavigate();
@@ -17,7 +18,17 @@ const Register = () => {
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
+            values = await Object.assign(values, { profile: file || '' })
             console.log(values)
+            let registerPromise = registerUser(values)
+            toast.promise(registerPromise, {
+                loading: 'Creating...',
+                success: <b>Register Successfully...!</b>,
+                error: <b>Could not Register.</b>
+            });
+
+            registerPromise.then(function () { navigate('/') });
+
         }
     })
     const onUpload = async e => {
@@ -28,12 +39,7 @@ const Register = () => {
 
         <>
             <Toaster position='top-center' reverseOrder={false}></Toaster>
-            <div className="preloader">
-                <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
-                    <path id="svg" d="M0,1005S175,995,500,995s500,5,500,5V0H0Z" />
-                </svg>
-                <h5 className="preloader-text">Loading</h5>
-            </div>
+
             <section
                 className="tf__banner banner"
                 style={{ background: "url(images/bg/banner.jpg)" }}
