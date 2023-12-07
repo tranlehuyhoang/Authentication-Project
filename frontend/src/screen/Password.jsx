@@ -1,10 +1,17 @@
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { usernameValidate, passwordValidate } from '../helpers/validate'
 import { useEffect, useState } from 'react';
-const Password = () => {
+import { registerUser, verifyPassword } from '../helpers/helper.js';
+import { useDispatch, useSelector } from 'react-redux'
 
+
+const Password = () => {
+    const { username } = useSelector(state => state.auth)
+    const redux = useSelector((state) => state);
+    console.log('redux', redux)
+    console.log(username)
     const navigate = useNavigate();
     const formik = useFormik({
         initialValues: {
@@ -14,7 +21,18 @@ const Password = () => {
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
-            console.log(values)
+            let loginPromise = verifyPassword({ username, password: values.password })
+            toast.promise(loginPromise, {
+                loading: 'Checking...',
+                success: <b>Login Successfully...!</b>,
+                error: <b>Password Not Match!</b>
+            });
+
+            loginPromise.then(res => {
+                let { token } = res.data;
+                localStorage.setItem('token', token);
+                navigate('/profile')
+            })
 
         }
     })
@@ -23,12 +41,7 @@ const Password = () => {
 
         <>
             <Toaster position='top-center' reverseOrder={false}></Toaster>
-            <div className="preloader">
-                <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
-                    <path id="svg" d="M0,1005S175,995,500,995s500,5,500,5V0H0Z" />
-                </svg>
-                <h5 className="preloader-text">Loading</h5>
-            </div>
+
             <section
                 className="tf__banner banner"
                 style={{ background: "url(images/bg/banner.jpg)" }}

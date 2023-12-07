@@ -59,11 +59,12 @@ const login = asyncHandler(async (req, res) => {
 
     try {
         const user = await UserModel.findOne({ username });
+        const passOk = await user.matchPassword(password);
+        console.log(user.password, password)
 
 
-        const passwordCheck = await bcrypt.compare(password, user.password);
 
-        if (!passwordCheck) {
+        if (!passOk) {
             return res.status(400).send({ error: "Incorrect password" });
         }
         const token = jwt.sign(

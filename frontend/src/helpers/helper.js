@@ -39,9 +39,9 @@ export async function registerUser(credentials) {
         const { data: { msg }, status } = await axios.post(`/api/register`, credentials);
 
         let { username, email } = credentials;
-
+        console.log(username, email)
         /** send email */
-        await axios.post('/api/registerMail', { username, userEmail: email, text: msg })
+        // await axios.post('/api/registerMail', { username, userEmail: email, text: msg })
         // if (status === 201) {
         // }
 

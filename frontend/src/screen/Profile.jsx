@@ -4,16 +4,31 @@ import { Link, useNavigate } from 'react-router-dom';
 import convertToBase64 from '../helpers/convert.js';
 import { usernameValidate, passwordValidate, registerValidation, profileValidation } from '../helpers/validate'
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { getUser } from '../helpers/helper.js';
 const Profile = () => {
+    const redux = useSelector((state) => state);
+    const [profile, setProfile] = useState();
+    const { username } = useSelector(state => state.auth)
+    useEffect(() => {
+        console.log(redux)
+        const fetchData = async () => {
+            let profile = await getUser({ username });
+            setProfile(profile.data)
+            console.log(profile);
+            setFile(profile.data.profile)
+        };
+        fetchData();
+    }, []);
     const [file, setFile] = useState()
     const navigate = useNavigate();
     const formik = useFormik({
         initialValues: {
-            firstName: '',
-            lastName: '',
-            email: '',
-            mobile: '',
-            address: ''
+            firstName: profile?.firstName || '',
+            lastName: profile?.lastName || '',
+            email: profile?.email || '',
+            mobile: profile?.mobile || '',
+            address: profile?.address || ''
         },
         enableReinitialize: true,
         validate: profileValidation,
@@ -33,16 +48,13 @@ const Profile = () => {
 
         <>
             <Toaster position='top-center' reverseOrder={false}></Toaster>
-            <div className="preloader">
-                <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
-                    <path id="svg" d="M0,1005S175,995,500,995s500,5,500,5V0H0Z" />
-                </svg>
-                <h5 className="preloader-text">Loading</h5>
-            </div>
+
             <section
                 className="tf__banner banner"
-                style={{ background: "url(images/bg/banner.jpg)" }}
+                style={{ background: "url( profile.profile ?profile.profile  :images/bg/banner.jpg)" }}
+
             >
+
                 <div className="container">
                     <div className="row justify-content-between">
                         <div className="col-xl-6 col-lg-8">
@@ -73,6 +85,9 @@ const Profile = () => {
                                                 Update
                                             </button>
                                         </form>
+                                        <button type="submit" className="common_btn">
+                                            Logout
+                                        </button>
 
                                     </div>
                                 </p>

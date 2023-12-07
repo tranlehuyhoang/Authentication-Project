@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import Password from '../screen/Password';
 
 export function AuthorizeUser({ children }) {
+    const navigate = useNavigate();
 
-    if (!localStorage.getItem('token')) {
+    if (localStorage.getItem('token')) {
 
         return children;
     } else {

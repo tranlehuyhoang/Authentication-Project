@@ -4,8 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { usernameValidate } from '../helpers/validate'
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
+import { setUsername } from '../slices/authSlice';
 const Username = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
     const redux = useSelector((state) => state);
+    console.log('redux', redux)
 
     const formik = useFormik({
         initialValues: {
@@ -15,9 +20,8 @@ const Username = () => {
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
-            console.log(values)
-            // navigate('/password')
-            window.location.href = '/password';
+            dispatch(setUsername(values.username));
+            navigate('/password')
 
         }
     })
