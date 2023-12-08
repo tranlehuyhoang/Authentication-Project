@@ -1,47 +1,39 @@
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
-import { usernameValidate, passwordValidate } from '../helpers/validate'
+import { usernameValidate } from '../../helpers/validate'
 import { useEffect, useState } from 'react';
-import { registerUser, verifyPassword } from '../helpers/helper.js';
 import { useDispatch, useSelector } from 'react-redux'
+import { setUsername } from '../../slices/authSlice';
+const Username = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-
-const Password = () => {
-    const { username } = useSelector(state => state.auth)
     const redux = useSelector((state) => state);
     console.log('redux', redux)
-    console.log(username)
-    const navigate = useNavigate();
+
     const formik = useFormik({
         initialValues: {
-            password: ''
+            username: 'example123'
         },
-        validate: passwordValidate,
+        validate: usernameValidate,
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
-            let loginPromise = verifyPassword({ username, password: values.password })
-            toast.promise(loginPromise, {
-                loading: 'Checking...',
-                success: <b>Login Successfully...!</b>,
-                error: <b>Password Not Match!</b>
-            });
-
-            loginPromise.then(res => {
-                let { token } = res.data;
-                localStorage.setItem('token', token);
-                navigate('/profile')
-            })
+            dispatch(setUsername(values.username));
+            navigate('/')
 
         }
     })
 
+    useEffect(() => {
+
+        console.log('redux', redux)
+    }, []);
     return (
 
         <>
             <Toaster position='top-center' reverseOrder={false}></Toaster>
-
             <section
                 className="tf__banner banner"
                 style={{ background: "url(images/bg/banner.jpg)" }}
@@ -59,10 +51,10 @@ const Password = () => {
 
                                         </p>
                                         <form onSubmit={formik.handleSubmit}>
-                                            <input className="" {...formik.getFieldProps('password')} type="password" placeholder="Your Password" />
+                                            <input className="" {...formik.getFieldProps('username')} type="text" placeholder="Your Name" />
 
                                             <button type="submit" className="common_btn">
-                                                Sign in
+                                                Register Now
                                             </button>
                                         </form>
                                     </div>
@@ -118,4 +110,4 @@ const Password = () => {
     )
 }
 
-export default Password
+export default Username

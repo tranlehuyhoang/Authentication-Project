@@ -97,16 +97,17 @@ const login = asyncHandler(async (req, res) => {
 
 
 const getUser = asyncHandler(async (req, res) => {
-    console.log(req.app.locals.OTP)
+    // console.log(req.app.locals.OTP)
     try {
-        const { username } = req.params;
-        console.log(username);
+        const { token } = req.query;
 
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const username = decoded.username
         if (!username) {
             return res.status(400).send({ error: "Invalid Username" });
         }
 
-        const user = await UserModel.findOne({ username });
+        const user = await UserModel.findOne({});
 
         if (!user) {
             return res.status(404).send({ error: "Couldn't Find the User" });

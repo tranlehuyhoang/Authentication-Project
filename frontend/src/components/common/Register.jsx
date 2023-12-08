@@ -1,39 +1,45 @@
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
-import { usernameValidate } from '../helpers/validate'
+import { Link, useNavigate } from 'react-router-dom';
+import convertToBase64 from '../../helpers/convert.js';
+import { usernameValidate, passwordValidate, registerValidation } from '../../helpers/validate.js'
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux'
-import { setUsername } from '../slices/authSlice';
-const Username = () => {
+import { registerUser } from '../../helpers/helper.js';
+const Register = () => {
+    const [file, setFile] = useState()
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    const redux = useSelector((state) => state);
-    console.log('redux', redux)
-
     const formik = useFormik({
         initialValues: {
-            username: 'example123'
+            email: 'doyol56239@cnogs.com',
+            username: 'example123',
+            password: 'admin@123'
         },
-        validate: usernameValidate,
+        validate: registerValidation,
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
-            dispatch(setUsername(values.username));
-            navigate('/password')
+            values = await Object.assign(values, { profile: file || '' })
+            console.log(values)
+            let registerPromise = registerUser(values)
+            toast.promise(registerPromise, {
+                loading: 'Creating...',
+                success: <b>Register Successfully...!</b>,
+                error: <b>Could not Register.</b>
+            });
+
+            registerPromise.then(function () { navigate('/') });
 
         }
     })
-
-    useEffect(() => {
-
-        console.log('redux', redux)
-    }, []);
+    const onUpload = async e => {
+        const base64 = await convertToBase64(e.target.files[0]);
+        setFile(base64);
+    }
     return (
 
         <>
             <Toaster position='top-center' reverseOrder={false}></Toaster>
+
             <section
                 className="tf__banner banner"
                 style={{ background: "url(images/bg/banner.jpg)" }}
@@ -51,12 +57,17 @@ const Username = () => {
 
                                         </p>
                                         <form onSubmit={formik.handleSubmit}>
-                                            <input className="" {...formik.getFieldProps('username')} type="text" placeholder="Your Name" />
+                                            <input {...formik.getFieldProps('email')} type="text" placeholder='Email*' />
+                                            <input {...formik.getFieldProps('username')} type="text" placeholder='Username*' />
+                                            <input {...formik.getFieldProps('password')} type="text" placeholder='Password*' />
 
                                             <button type="submit" className="common_btn">
-                                                Register Now
+                                                Register
                                             </button>
                                         </form>
+                                        <div className="text-center py-4">
+                                            <span className='text-gray-500'>Already Register? <Link className='text-red-500' to="/">Login Now</Link></span>
+                                        </div>
                                     </div>
                                 </p>
 
@@ -67,13 +78,13 @@ const Username = () => {
                                 <div className="img">
                                     <label htmlFor="avatar" style={{ display: 'initial' }}>
                                         <img
+                                            src={file || 'https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg'}
 
-                                            src="https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
                                             alt="ZYAN"
                                             className="img-fluid w-100 hexagon-image"
                                         />
                                     </label>
-                                    <input type="file" style={{ display: 'none' }} id="avatar" />
+                                    <input onChange={onUpload} type="file" style={{ display: 'none' }} id="avatar" />
                                 </div>
 
                             </div>
@@ -110,4 +121,5 @@ const Username = () => {
     )
 }
 
-export default Username
+export default Register
+

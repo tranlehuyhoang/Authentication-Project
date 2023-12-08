@@ -1,33 +1,43 @@
-import toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 import { Link, useNavigate } from 'react-router-dom';
-import convertToBase64 from '../helpers/convert.js';
-import { usernameValidate, passwordValidate, registerValidation } from '../helpers/validate'
+import convertToBase64 from '../../helpers/convert.js';
+import { usernameValidate, passwordValidate, registerValidation, profileValidation } from '../../helpers/validate.js'
 import { useEffect, useState } from 'react';
-import { registerUser } from '../helpers/helper.js';
-const Register = () => {
+import { useSelector } from 'react-redux';
+import { getUser } from '../../helpers/helper.js';
+const Profile = () => {
+    const redux = useSelector((state) => state);
+    const [profile, setProfile] = useState();
+    const { username } = useSelector(state => state.auth)
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+        console.log(redux)
+        const fetchData = async () => {
+            let profile = await getUser({ token });
+            setProfile(profile.data)
+            console.log(profile);
+            setFile(profile.data.profile)
+        };
+        fetchData();
+    }, []);
     const [file, setFile] = useState()
     const navigate = useNavigate();
     const formik = useFormik({
         initialValues: {
-            email: 'doyol56239@cnogs.com',
-            username: 'example123',
-            password: 'admin@123'
+            firstName: profile?.firstName || '',
+            lastName: profile?.lastName || '',
+            email: profile?.email || '',
+            mobile: profile?.mobile || '',
+            address: profile?.address || ''
         },
-        validate: registerValidation,
+        enableReinitialize: true,
+        validate: profileValidation,
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
             values = await Object.assign(values, { profile: file || '' })
             console.log(values)
-            let registerPromise = registerUser(values)
-            toast.promise(registerPromise, {
-                loading: 'Creating...',
-                success: <b>Register Successfully...!</b>,
-                error: <b>Could not Register.</b>
-            });
-
-            registerPromise.then(function () { navigate('/') });
 
         }
     })
@@ -42,8 +52,10 @@ const Register = () => {
 
             <section
                 className="tf__banner banner"
-                style={{ background: "url(images/bg/banner.jpg)" }}
+                style={{ background: "url( profile.profile ?profile.profile  :images/bg/banner.jpg)" }}
+
             >
+
                 <div className="container">
                     <div className="row justify-content-between">
                         <div className="col-xl-6 col-lg-8">
@@ -51,23 +63,31 @@ const Register = () => {
 
                                 <p>
                                     <div className="tf__design_form">
-                                        <h2 className="has-animation">Hello Again!</h2>
+                                        <h2 className="has-animation">Hello {profile?.username}</h2>
                                         <p className="">
                                             Explore More by connecting with us.
 
                                         </p>
                                         <form onSubmit={formik.handleSubmit}>
-                                            <input {...formik.getFieldProps('email')} type="text" placeholder='Email*' />
-                                            <input {...formik.getFieldProps('username')} type="text" placeholder='Username*' />
-                                            <input {...formik.getFieldProps('password')} type="text" placeholder='Password*' />
+                                            <div className="name flex w-3/4 gap-10">
+                                                <input {...formik.getFieldProps('firstName')} type="text" placeholder='FirstName' />
+                                                <input {...formik.getFieldProps('lastName')} type="text" placeholder='LastName' />
+                                            </div>
+
+                                            <div className="name flex w-3/4 gap-10">
+                                                <input {...formik.getFieldProps('mobile')} type="text" placeholder='Mobile No.' />
+                                                <input {...formik.getFieldProps('email')} type="text" placeholder='Email*' />
+                                            </div>
+
+
+                                            <input {...formik.getFieldProps('address')} type="text" placeholder='Address' />
 
                                             <button type="submit" className="common_btn">
-                                                Register
+                                                Update
                                             </button>
                                         </form>
-                                        <div className="text-center py-4">
-                                            <span className='text-gray-500'>Already Register? <Link className='text-red-500' to="/">Login Now</Link></span>
-                                        </div>
+                                        <div className="text-center py-4"><span className="text-gray-500">Already Register? <a className="text-red-500" href="/">Login Now</a></span></div>
+
                                     </div>
                                 </p>
 
@@ -79,7 +99,6 @@ const Register = () => {
                                     <label htmlFor="avatar" style={{ display: 'initial' }}>
                                         <img
                                             src={file || 'https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg'}
-
                                             alt="ZYAN"
                                             className="img-fluid w-100 hexagon-image"
                                         />
@@ -121,5 +140,5 @@ const Register = () => {
     )
 }
 
-export default Register
+export default Profile
 

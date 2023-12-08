@@ -1,22 +1,19 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Username from './screen/Username.jsx';
-import Password from './screen/Password.jsx';
-import Register from './screen/Register';
-import Profile from './screen/Profile';
-import Recovery from './screen/Recovery';
-import Reset from './screen/Reset';
-import PageNotFound from './screen/PageNotFound';
-import { AuthorizeUser, ProtectRoute } from './middleware/auth.js'
+import Username from './components/common/Username.jsx';
+import Password from './components/common/Password.jsx';
+import Register from './components/common/Register.jsx';
+import Profile from './components/common/Profile.jsx';
+import Recovery from './components/common/Recovery.jsx';
+import Reset from './components/common/Reset.jsx';
+import PageNotFound from './components/common/PageNotFound.jsx';
+// import { AuthorizeUser, ProtectRoute } from './middleware/auth.js'
+import MainScreen from './screen/MainScreen.jsx';
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Username />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/password' element={<ProtectRoute><Password /></ProtectRoute>} />
-        <Route path='/profile' element={<AuthorizeUser><Profile /></AuthorizeUser>} />
-        <Route path='/recovery' element={<Recovery />} />
-        <Route path='/reset' element={<Reset />} />
+
+        <Route path='/' element={<MainScreen />} />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
     </BrowserRouter>

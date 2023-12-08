@@ -24,9 +24,9 @@ export async function authenticate(username) {
 }
 
 /** get User details */
-export async function getUser({ username }) {
+export async function getUser({ token }) {
     try {
-        const { data } = await axios.get(`/api/user/${username}`);
+        const { data } = await axios.get(`/api/user?token=${token}`);
         return { data };
     } catch (error) {
         return { error: "Password doesn't Match...!" }

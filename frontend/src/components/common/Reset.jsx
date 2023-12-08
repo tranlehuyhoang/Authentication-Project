@@ -1,60 +1,45 @@
 import { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
-import { Link, useNavigate } from 'react-router-dom';
-import convertToBase64 from '../helpers/convert.js';
-import { usernameValidate, passwordValidate, registerValidation, profileValidation } from '../helpers/validate'
+import { useNavigate } from 'react-router-dom';
+import { resetPasswordValidation, usernameValidate } from '../../helpers/validate'
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { getUser } from '../helpers/helper.js';
-const Profile = () => {
-    const redux = useSelector((state) => state);
-    const [profile, setProfile] = useState();
-    const { username } = useSelector(state => state.auth)
-    useEffect(() => {
-        console.log(redux)
-        const fetchData = async () => {
-            let profile = await getUser({ username });
-            setProfile(profile.data)
-            console.log(profile);
-            setFile(profile.data.profile)
-        };
-        fetchData();
-    }, []);
-    const [file, setFile] = useState()
+const Reset = () => {
+
+
     const navigate = useNavigate();
     const formik = useFormik({
         initialValues: {
-            firstName: profile?.firstName || '',
-            lastName: profile?.lastName || '',
-            email: profile?.email || '',
-            mobile: profile?.mobile || '',
-            address: profile?.address || ''
+            password: 'admin@123',
+            confirm_pwd: 'admin@123'
         },
-        enableReinitialize: true,
-        validate: profileValidation,
+        validate: resetPasswordValidation,
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
-            values = await Object.assign(values, { profile: file || '' })
             console.log(values)
 
         }
     })
-    const onUpload = async e => {
-        const base64 = await convertToBase64(e.target.files[0]);
-        setFile(base64);
-    }
+
+
     return (
 
         <>
             <Toaster position='top-center' reverseOrder={false}></Toaster>
 
+            <div className="preloader">
+                <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                    <path id="svg" d="M0,1005S175,995,500,995s500,5,500,5V0H0Z" />
+                </svg>
+                <h5 className="preloader-text">Loading</h5>
+            </div>
+
+
+
             <section
                 className="tf__banner banner"
-                style={{ background: "url( profile.profile ?profile.profile  :images/bg/banner.jpg)" }}
-
+                style={{ background: "url(images/bg/banner.jpg)" }}
             >
-
                 <div className="container">
                     <div className="row justify-content-between">
                         <div className="col-xl-6 col-lg-8">
@@ -68,27 +53,13 @@ const Profile = () => {
 
                                         </p>
                                         <form onSubmit={formik.handleSubmit}>
-                                            <div className="name flex w-3/4 gap-10">
-                                                <input {...formik.getFieldProps('firstName')} type="text" placeholder='FirstName' />
-                                                <input {...formik.getFieldProps('lastName')} type="text" placeholder='LastName' />
-                                            </div>
-
-                                            <div className="name flex w-3/4 gap-10">
-                                                <input {...formik.getFieldProps('mobile')} type="text" placeholder='Mobile No.' />
-                                                <input {...formik.getFieldProps('email')} type="text" placeholder='Email*' />
-                                            </div>
-
-
-                                            <input {...formik.getFieldProps('address')} type="text" placeholder='Address' />
+                                            <input {...formik.getFieldProps('password')} type="text" placeholder='New Password' />
+                                            <input {...formik.getFieldProps('confirm_pwd')} type="text" placeholder='Repeat Password' />
 
                                             <button type="submit" className="common_btn">
-                                                Update
+                                                Register Now
                                             </button>
                                         </form>
-                                        <button type="submit" className="common_btn">
-                                            Logout
-                                        </button>
-
                                     </div>
                                 </p>
 
@@ -99,12 +70,13 @@ const Profile = () => {
                                 <div className="img">
                                     <label htmlFor="avatar" style={{ display: 'initial' }}>
                                         <img
-                                            src={file || 'https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg'}
+
+                                            src="https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
                                             alt="ZYAN"
                                             className="img-fluid w-100 hexagon-image"
                                         />
                                     </label>
-                                    <input onChange={onUpload} type="file" style={{ display: 'none' }} id="avatar" />
+                                    <input type="file" style={{ display: 'none' }} id="avatar" />
                                 </div>
 
                             </div>
@@ -141,5 +113,4 @@ const Profile = () => {
     )
 }
 
-export default Profile
-
+export default Reset
