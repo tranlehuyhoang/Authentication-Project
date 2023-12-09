@@ -5,7 +5,31 @@ import { usernameValidate } from '../helpers/validate'
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import { setUsername } from '../slices/authSlice';
+import { FaUserAlt, FaLock } from "react-icons/fa";
+import {
+    Flex,
+    Heading,
+    Input,
+    Button,
+    InputGroup,
+    Stack,
+    InputLeftElement,
+    chakra,
+    Box,
+    Link,
+    Avatar,
+    FormControl,
+    FormHelperText,
+    InputRightElement
+} from "@chakra-ui/react";
+
+const CFaUserAlt = chakra(FaUserAlt);
+const CFaLock = chakra(FaLock);
 const Username = () => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleShowClick = () => setShowPassword(!showPassword);
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -37,46 +61,63 @@ const Username = () => {
 
 
 
-            <section className="contact" id="contact" style={{
-                height: "100vh",
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}>
-                <h2 className="heading">
-                    <i className="fas fa-headset" /> Hello Agian!
-                </h2>
-                <div
-                    className="container"
-                    style={{
-                        maxWidth: "100vw",
 
 
-                    }}
+            <Flex
+                flexDirection="column"
+                width="100wh"
+                height="100vh"
+                backgroundColor="gray.200"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <Stack
+                    flexDir="column"
+                    mb="2"
+                    justifyContent="center"
+                    alignItems="center"
                 >
-                    <div
-                        className="content"
-                        style={{ display: "flex", flexDirection: "column", width: "100%", alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}
-                    >
-                        <form id="contact-form" onSubmit={formik.handleSubmit}>
-                            <div className="form-group">
-                                <div className="field">
-                                    <input type="text" {...formik.getFieldProps('username')} placeholder="Username" required="" />
-                                    <i className="fas fa-user" />
-                                </div>
-                            </div>
-                            <div className="button-area">
-                                <button type="submit">
-                                    Login <i className="fa fa-paper-plane" />
-                                </button>
-                            </div>
+                    <Avatar bg="teal.500" />
+                    <Heading color="teal.400">Welcome</Heading>
+                    <Box minW={{ base: "90%", md: "468px" }}>
+                        <form onSubmit={formik.handleSubmit}>
+                            <Stack
+                                spacing={4}
+                                p="1rem"
+                                backgroundColor="whiteAlpha.900"
+                                boxShadow="md"
+                            >
+                                <FormControl>
+                                    <InputGroup>
+                                        <InputLeftElement
+
+                                            pointerEvents="none"
+                                            children={<CFaUserAlt color="gray.300" />}
+                                        />
+                                        <Input type="text" {...formik.getFieldProps('username')} placeholder="email address" />
+                                    </InputGroup>
+                                </FormControl>
+
+                                <Button
+                                    borderRadius={0}
+                                    type="submit"
+                                    variant="solid"
+                                    colorScheme="teal"
+                                    width="full"
+                                >
+                                    Login
+                                </Button>
+                            </Stack>
                         </form>
-                    </div>
-                </div>
-            </section>
-
-
+                    </Box>
+                </Stack>
+                <Box>
+                    New to us?{" "}
+                    <Link color="teal.500" href="#">
+                        Sign Up
+                    </Link>
+                </Box>
+            </Flex>
 
 
 
