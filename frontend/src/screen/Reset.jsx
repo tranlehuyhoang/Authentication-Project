@@ -1,10 +1,33 @@
-import { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
-import { resetPasswordValidation, usernameValidate } from '../helpers/validate'
+import toast, { Toaster } from 'react-hot-toast';
+import { useNavigate, Link } from 'react-router-dom';
+import { usernameValidate, passwordValidate, resetPasswordValidation } from '../helpers/validate.js'
 import { useEffect, useState } from 'react';
+import { registerUser, verifyPassword } from '../helpers/helper.js';
+import { useDispatch, useSelector } from 'react-redux'
+import {
+    Flex,
+    Heading,
+    Input,
+    Button,
+    InputGroup,
+    Stack,
+    InputLeftElement,
+    chakra,
+    Box,
+    Avatar,
+    FormControl,
+    FormHelperText,
+    InputRightElement
+} from "@chakra-ui/react";
+import { FaUserAlt, FaLock } from "react-icons/fa";
+const CFaUserAlt = chakra(FaUserAlt);
+const CFaLock = chakra(FaLock);
 const Reset = () => {
-
+    const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordconfirm_pwd, setShowPasswordconfirm_pwd] = useState(false);
+    const handleShowClick = () => setShowPassword(!showPassword);
+    const handleShowClickconfirm_pwd = () => setShowPasswordconfirm_pwd(!showPasswordconfirm_pwd);
 
     const navigate = useNavigate();
     const formik = useFormik({
@@ -27,88 +50,85 @@ const Reset = () => {
         <>
             <Toaster position='top-center' reverseOrder={false}></Toaster>
 
-            <div className="preloader">
-                <svg viewBox="0 0 1000 1000" preserveAspectRatio="none">
-                    <path id="svg" d="M0,1005S175,995,500,995s500,5,500,5V0H0Z" />
-                </svg>
-                <h5 className="preloader-text">Loading</h5>
-            </div>
-
-
-
-            <section
-                className="tf__banner banner"
-                style={{ background: "url(images/bg/banner.jpg)" }}
+            <Flex
+                flexDirection="column"
+                width="100wh"
+                height="100vh"
+                backgroundColor="gray.200"
+                justifyContent="center"
+                alignItems="center"
             >
-                <div className="container">
-                    <div className="row justify-content-between">
-                        <div className="col-xl-6 col-lg-8">
-                            <div className="tf__banner_text">
-
-                                <p>
-                                    <div className="tf__design_form">
-                                        <h2 className="has-animation">Hello Again!</h2>
-                                        <p className="">
-                                            Explore More by connecting with us.
-
-                                        </p>
-                                        <form onSubmit={formik.handleSubmit}>
-                                            <input {...formik.getFieldProps('password')} type="text" placeholder='New Password' />
-                                            <input {...formik.getFieldProps('confirm_pwd')} type="text" placeholder='Repeat Password' />
-
-                                            <button type="submit" className="common_btn">
-                                                Register Now
-                                            </button>
-                                        </form>
-                                    </div>
-                                </p>
-
-                            </div>
-                        </div>
-                        <div className="col-xl-5 col-lg-4">
-                            <div className="tf__banner_img">
-                                <div className="img">
-                                    <label htmlFor="avatar" style={{ display: 'initial' }}>
-                                        <img
-
-                                            src="https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg"
-                                            alt="ZYAN"
-                                            className="img-fluid w-100 hexagon-image"
-                                        />
-                                    </label>
-                                    <input type="file" style={{ display: 'none' }} id="avatar" />
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-
-
-            {/*================================
-    FOOTER END
-  =================================*/}
-            {/*================================
-    SCROLL BUTTON START
-      =================================*/}
-            <div className="progress active c-pointer">
-                <svg
-                    className="progress-svg"
-                    width="100%"
-                    height="100%"
-                    viewBox="-1 -1 102 102"
+                <Stack
+                    flexDir="column"
+                    mb="2"
+                    justifyContent="center"
+                    alignItems="center"
                 >
-                    <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" />
-                </svg>
-            </div>
+                    <Heading color="teal.400">Reset Password</Heading>
+                    <Box minW={{ base: "90%", md: "468px" }}>
+                        <form onSubmit={formik.handleSubmit}>
+                            <Stack
+                                spacing={4}
+                                p="1rem"
+                                backgroundColor="whiteAlpha.900"
+                                boxShadow="md"
+                            >
 
-            <div id="magic-cursor">
-                <div id="ball" />
-            </div>
+                                <FormControl>
+                                    <InputGroup>
+                                        <InputLeftElement
+                                            pointerEvents="none"
+                                            color="gray.300"
+                                            children={<CFaLock color="gray.300" />}
+                                        />
+                                        <Input
+                                            {...formik.getFieldProps('password')}
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Password"
+                                        />
+                                        <InputRightElement width="4.5rem">
+                                            <Button h="1.75rem" size="sm" onClick={handleShowClick}>
+                                                {showPassword ? "Hide" : "Show"}
+                                            </Button>
+                                        </InputRightElement>
+                                    </InputGroup>
 
+                                </FormControl>
+                                <FormControl>
+                                    <InputGroup>
+                                        <InputLeftElement
+                                            pointerEvents="none"
+                                            color="gray.300"
+                                            children={<CFaLock color="gray.300" />}
+                                        />
+                                        <Input
+                                            {...formik.getFieldProps('confirm_pwd')}
+                                            type={showPasswordconfirm_pwd ? "text" : "password"}
+                                            placeholder="Password"
+                                        />
+                                        <InputRightElement width="4.5rem">
+                                            <Button h="1.75rem" size="sm" onClick={handleShowClickconfirm_pwd}>
+                                                {showPasswordconfirm_pwd ? "Hide" : "Show"}
+                                            </Button>
+                                        </InputRightElement>
+                                    </InputGroup>
 
+                                </FormControl>
+                                <Button
+                                    borderRadius={0}
+                                    type="submit"
+                                    variant="solid"
+                                    colorScheme="teal"
+                                    width="full"
+                                >
+                                    Reset
+                                </Button>
+                            </Stack>
+                        </form>
+                    </Box>
+                </Stack>
+
+            </Flex>
         </>
     )
 }

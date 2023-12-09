@@ -40,11 +40,10 @@ export const registerMail = asyncHandler(async (req, res) => {
                 name: 'John Doe',
                 intro: 'Welcome to our platform!',
                 action: {
-                    instructions: 'Please click the button below to get started:',
+                    instructions: text,
                     button: {
                         color: '#22BC66', // Customize the button color
-                        text: text,
-                        link: 'https://example.com/activate'
+
                     }
                 },
                 outro: 'If you have any questions, feel free to reach out to us.'

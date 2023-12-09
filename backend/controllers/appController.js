@@ -99,15 +99,14 @@ const login = asyncHandler(async (req, res) => {
 const getUser = asyncHandler(async (req, res) => {
     // console.log(req.app.locals.OTP)
     try {
-        const { token } = req.query;
+        const { username } = req.query;
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const username = decoded.username
+
         if (!username) {
             return res.status(400).send({ error: "Invalid Username" });
         }
 
-        const user = await UserModel.findOne({});
+        const user = await UserModel.findOne({ username });
 
         if (!user) {
             return res.status(404).send({ error: "Couldn't Find the User" });
@@ -124,17 +123,22 @@ const getUser = asyncHandler(async (req, res) => {
 });
 const updateUser = asyncHandler(async (req, res) => {
     try {
-        const { _id } = req.user;
+        const { token } = req.query;
+        console.log('TOKEN', token)
         // console.log(req.user)
-        if (_id) {
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log(decoded)
+        const userId = decoded.userId
+        if (userId) {
             const body = req.body;
 
             // update the data
-            await UserModel.updateOne({ _id: _id }, body);
+            await UserModel.updateOne({ '_id': userId }, body);
 
             return res.status(200).send({ msg: "Record Updated...!" });
         } else {
-            return res.status(401).send({ error: "User Not Found...!" });
+            return res.status(405).send({ error: "User Not Found...!" });
         }
     } catch (error) {
         console.error(error);

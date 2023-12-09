@@ -1,11 +1,35 @@
 import toast, { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
-import { Link, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import convertToBase64 from '../helpers/convert.js';
 import { usernameValidate, passwordValidate, registerValidation } from '../helpers/validate.js'
 import { useEffect, useState } from 'react';
 import { registerUser } from '../helpers/helper.js';
+import {
+    Flex,
+    Heading,
+    Input,
+    Button,
+    InputGroup,
+    Stack,
+    InputLeftElement,
+    chakra,
+    Box,
+    Link,
+    Avatar,
+    FormControl,
+    FormHelperText,
+    InputRightElement,
+    Image,
+    Center
+} from "@chakra-ui/react";
+import { FaUserAlt, FaLock } from "react-icons/fa";
+const CFaUserAlt = chakra(FaUserAlt);
+const CFaLock = chakra(FaLock);
 const Register = () => {
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleShowClick = () => setShowPassword(!showPassword);
     const [file, setFile] = useState()
     const navigate = useNavigate();
     const formik = useFormik({
@@ -42,67 +66,107 @@ const Register = () => {
 
 
 
-            <section className="contact" id="contact" style={{ height: "100vh" }}>
-                <h2 className="heading">
-                    <i className="fas fa-headset" /> Hello !
-                </h2>
-                <div
-                    className="container"
-                    style={{ maxWidth: "100vw", display: "flex", justifyContent: "center" }}
+
+            <Flex
+                flexDirection="column"
+                width="100wh"
+                height="100vh"
+                backgroundColor="gray.200"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <Stack
+                    flexDir="column"
+                    mb="2"
+                    justifyContent="center"
+                    alignItems="center"
                 >
-                    <div className="content" style={{ display: "flex", width: "80%" }}>
-                        <div className="image-box">
-                            <label htmlFor="avatar" style={{ display: 'initial' }}>
-
-                                <img
-                                    draggable="false"
-                                    src={file || 'https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg'}
-                                    alt=""
-                                />
-                            </label>
-                            <input onChange={onUpload} type="file" style={{ display: 'none' }} id="avatar" />
-                        </div>
-                        <form id="contact-form" onSubmit={formik.handleSubmit}>
-                            <div className="form-group">
-                                <div className="field">
-                                    <input  {...formik.getFieldProps('email')} type="text" placeholder='Email*' />
-                                    <i className="fas fa-user" />
-                                </div>
-                                <div className="field">
-                                    <input  {...formik.getFieldProps('username')} type="text" placeholder='Username*' />
-                                    <i className="fas fa-user" />
-                                </div>
-                                <div className="field">
-                                    <input  {...formik.getFieldProps('password')} type="text" placeholder='Password*' />
-                                    <i className="fas fa-user" />
-                                </div>
-
-                            </div>
-                            <div className="button-area">
-                                <button type="submit">
-                                    Register <i className="fa fa-paper-plane" />
-                                </button>
-                            </div>
-                            <div
-                                className="button-area"
-                                style={{
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    display: "flex",
-                                    height: 50,
-                                    width: "100%"
-                                }}
+                    <Heading color="teal.400">Welcome</Heading>
+                    <Box minW={{ base: "90%", md: "468px" }}>
+                        <form onSubmit={formik.handleSubmit}>
+                            <Stack
+                                spacing={4}
+                                p="1rem"
+                                backgroundColor="whiteAlpha.900"
+                                boxShadow="md"
                             >
-                                <p>
-                                    Already Register? <a href="/register">Login Now</a>
-                                </p>
-                            </div>
+                                <Center >
+
+                                    <label htmlFor="avatar" style={{ display: 'initial' }}>
+
+                                        <Image style={{ height: '150px', width: '150px' }} src={file || 'https://via.placeholder.com/150'} alt='Dan Abramov' />
+                                    </label>
+                                    <input onChange={onUpload} type="file" style={{ display: 'none' }} id="avatar" />
+
+                                </Center>
+
+                                <FormControl>
+                                    <InputGroup>
+                                        <InputLeftElement
+                                            pointerEvents="none"
+                                            children={<CFaUserAlt color="gray.300" />}
+                                        />
+                                        <Input type="email" placeholder="Email"
+
+                                            {...formik.getFieldProps('email')} />
+                                    </InputGroup>
+                                </FormControl>
+                                <FormControl>
+                                    <InputGroup>
+                                        <InputLeftElement
+                                            pointerEvents="none"
+                                            children={<CFaUserAlt color="gray.300" />}
+                                        />
+                                        <Input type="text" placeholder="username"
+
+                                            {...formik.getFieldProps('username')} />
+                                    </InputGroup>
+                                </FormControl>
+
+
+
+                                <FormControl>
+                                    <InputGroup>
+                                        <InputLeftElement
+                                            pointerEvents="none"
+                                            color="gray.300"
+                                            children={<CFaLock color="gray.300" />}
+                                        />
+                                        <Input
+                                            type={showPassword ? "text" : "password"}
+                                            placeholder="Password"
+                                            {...formik.getFieldProps('password')}
+                                        />
+                                        <InputRightElement width="4.5rem">
+                                            <Button h="1.75rem" size="sm" onClick={handleShowClick}>
+                                                {showPassword ? "Hide" : "Show"}
+                                            </Button>
+                                        </InputRightElement>
+                                    </InputGroup>
+                                    <FormHelperText textAlign="right">
+                                        <Link>forgot password?</Link>
+                                    </FormHelperText>
+                                </FormControl>
+
+
+                                <Button
+                                    borderRadius={0}
+                                    type="submit"
+                                    variant="solid"
+                                    colorScheme="teal"
+                                    width="full"
+                                >
+                                    Register
+                                </Button>
+                            </Stack>
                         </form>
-                    </div>
-                </div>
-            </section>
-
-
+                    </Box>
+                </Stack>
+                <Box>
+                    Already have an account?{" "}
+                    <Link href='/'>Login</Link>
+                </Box>
+            </Flex>
         </>
     )
 }

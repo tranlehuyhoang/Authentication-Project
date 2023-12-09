@@ -1,20 +1,46 @@
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
 import { Link, useNavigate } from 'react-router-dom';
 import convertToBase64 from '../helpers/convert.js';
 import { usernameValidate, passwordValidate, registerValidation, profileValidation } from '../helpers/validate.js'
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getUser } from '../helpers/helper.js';
+import { getUser, updateUser } from '../helpers/helper.js';
+import {
+    Flex,
+    Heading,
+    Input,
+    Button,
+    InputGroup,
+    Stack,
+    InputLeftElement,
+    chakra,
+    Box,
+
+    Avatar,
+    FormControl,
+    FormHelperText,
+    InputRightElement,
+    Image
+} from "@chakra-ui/react";
+import { FaUserAlt, FaLock } from "react-icons/fa";
+const CFaUserAlt = chakra(FaUserAlt);
+const CFaLock = chakra(FaLock);
 const Profile = () => {
+
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleShowClick = () => setShowPassword(!showPassword);
+
     const redux = useSelector((state) => state);
     const [profile, setProfile] = useState();
     const { username } = useSelector(state => state.auth)
-    const token = localStorage.getItem('token');
+
     useEffect(() => {
         console.log(redux)
         const fetchData = async () => {
-            let profile = await getUser({ token });
+            let profile = await getUser({ username });
             setProfile(profile.data)
             console.log(profile);
             setFile(profile.data.profile)
@@ -37,7 +63,14 @@ const Profile = () => {
         validateOnChange: false,
         onSubmit: async values => {
             values = await Object.assign(values, { profile: file || '' })
-            console.log(values)
+            console.log('values', values)
+            let updatePromise = updateUser(values);
+
+            toast.promise(updatePromise, {
+                loading: 'Updating...',
+                success: <b>Update Successfully...!</b>,
+                error: <b>Could not Update!</b>
+            });
 
         }
     })
@@ -49,74 +82,125 @@ const Profile = () => {
 
         <>
             <Toaster position='top-center' reverseOrder={false}></Toaster>
-            <section className="contact" id="contact" style={{ height: "100vh" }}>
-                <h2 className="heading">
-                    <i className="fas fa-headset" /> Hello {profile?.username}!
-                </h2>
-                <div
-                    className="container"
-                    style={{ maxWidth: "100vw", display: "flex", justifyContent: "center" }}
+
+
+            <Flex
+                flexDirection="column"
+                width="100wh"
+                height="100vh"
+                backgroundColor="gray.200"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <Stack
+                    flexDir="column"
+                    mb="2"
+                    justifyContent="center"
+                    alignItems="center"
                 >
-                    <div className="content" style={{ display: "flex", width: "80%" }}>
-                        <div className="image-box">
-                            <label htmlFor="avatar" style={{ display: 'initial' }}>
-
-                                <img
-                                    draggable="false"
-                                    src={file || 'https://t4.ftcdn.net/jpg/03/49/49/79/360_F_349497933_Ly4im8BDmHLaLzgyKg2f2yZOvJjBtlw5.jpg'}
-                                    alt=""
-                                />
-                            </label>
-                            <input onChange={onUpload} type="file" style={{ display: 'none' }} id="avatar" />
-                        </div>
-                        <form id="contact-form" onSubmit={formik.handleSubmit}>
-                            <div className="form-group">
-                                <div className="field">
-                                    <input type="text" {...formik.getFieldProps('firstName')} placeholder='firstName' />
-                                    <i className="fas fa-user" />
-                                </div>
-                                <div className="field">
-                                    <input type="text" {...formik.getFieldProps('lastName')} placeholder='lastName' />
-                                    <i className="fas fa-user" />
-                                </div>
-                                <div className="field">
-                                    <input type="mobile" {...formik.getFieldProps('mobile')} placeholder='mobile' />
-                                    <i className="fas fa-user" />
-                                </div>
-                                <div className="field">
-                                    <input type="email" {...formik.getFieldProps('email')} placeholder='email' />
-                                    <i className="fas fa-user" />
-                                </div>
-                                <div className="field">
-                                    <input type="text" {...formik.getFieldProps('address')} placeholder='address' />
-                                    <i className="fas fa-user" />
-                                </div>
-                            </div>
-                            <div className="button-area">
-                                <button type="submit">
-                                    Update <i className="fa fa-paper-plane" />
-                                </button>
-                            </div>
-                            <div
-                                className="button-area"
-                                style={{
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    display: "flex",
-                                    height: 50,
-                                    width: "100%"
-                                }}
+                    <Heading color="teal.400">Welcome</Heading>
+                    <Box minW={{ base: "90%", md: "468px" }}>
+                        <form onSubmit={formik.handleSubmit}>
+                            <Stack
+                                spacing={4}
+                                p="1rem"
+                                backgroundColor="whiteAlpha.900"
+                                boxShadow="md"
                             >
-                                <p>
-                                    Already Register? <a href="/register">Login Now</a>
-                                </p>
-                            </div>
+                                <Stack direction='row' spacing={8}>
+                                    <Box>
+                                        <FormControl>
+                                            <InputGroup>
+                                                <InputLeftElement
+                                                    pointerEvents="none"
+                                                    children={<CFaUserAlt color="gray.300" />}
+                                                />
+                                                <Input type="text" placeholder="firstName"
+                                                    {...formik.getFieldProps('firstName')}
+                                                />
+                                            </InputGroup>
+                                        </FormControl>
+                                        <FormControl>
+                                            <InputGroup>
+                                                <InputLeftElement
+                                                    pointerEvents="none"
+                                                    children={<CFaUserAlt color="gray.300" />}
+                                                />
+                                                <Input type="text" placeholder="lastName"
+                                                    {...formik.getFieldProps('lastName')}
+                                                />
+                                            </InputGroup>
+                                        </FormControl>
+                                    </Box>
+                                    <label htmlFor="avatar" style={{ display: 'initial' }}>
+
+                                        <Image style={{ height: '150px', width: '150px' }} src={file || 'https://via.placeholder.com/150'} alt='Dan Abramov' />
+                                    </label>
+                                    <input onChange={onUpload} type="file" style={{ display: 'none' }} id="avatar" />
+
+                                </Stack>
+                                <FormControl>
+                                    <InputGroup>
+                                        <InputLeftElement
+                                            pointerEvents="none"
+                                            children={<CFaUserAlt color="gray.300" />}
+                                        />
+                                        <Input type="number" placeholder="mobile"
+
+                                            {...formik.getFieldProps('mobile')}
+                                        />
+                                    </InputGroup>
+                                </FormControl>
+                                <FormControl>
+                                    <InputGroup>
+                                        <InputLeftElement
+                                            pointerEvents="none"
+                                            children={<CFaUserAlt color="gray.300" />}
+                                        />
+                                        <Input type="text" placeholder="email"
+
+                                            {...formik.getFieldProps('email')}
+                                        />
+                                    </InputGroup>
+                                </FormControl>
+                                <FormControl>
+                                    <InputGroup>
+                                        <InputLeftElement
+                                            pointerEvents="none"
+                                            children={<CFaUserAlt color="gray.300" />}
+                                        />
+                                        <Input type="text" placeholder="address"
+
+                                            {...formik.getFieldProps('address')} />
+                                    </InputGroup>
+                                </FormControl>
+
+                                <FormControl>
+
+                                    <FormHelperText textAlign="right">
+                                        <Link>forgot password?</Link>
+                                    </FormHelperText>
+                                </FormControl>
+                                <Button
+                                    borderRadius={0}
+                                    type="submit"
+                                    variant="solid"
+                                    colorScheme="teal"
+                                    width="full"
+                                >
+                                    Update
+                                </Button>
+                            </Stack>
                         </form>
-                    </div>
-                </div>
-            </section>
-
-
+                    </Box>
+                </Stack>
+                <Box>
+                    New to us?{" "}
+                    <Link color="teal.500" to={'/register'}>
+                        Sign Up
+                    </Link>
+                </Box>
+            </Flex>
 
         </>
     )

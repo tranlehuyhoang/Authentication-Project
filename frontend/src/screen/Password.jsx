@@ -1,6 +1,6 @@
 import toast, { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { usernameValidate, passwordValidate } from '../helpers/validate.js'
 import { useEffect, useState } from 'react';
 import { registerUser, verifyPassword } from '../helpers/helper.js';
@@ -15,20 +15,16 @@ import {
     InputLeftElement,
     chakra,
     Box,
-    Link,
     Avatar,
     FormControl,
     FormHelperText,
     InputRightElement
 } from "@chakra-ui/react";
 import { FaUserAlt, FaLock } from "react-icons/fa";
-
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
-
 const Password = () => {
     const [showPassword, setShowPassword] = useState(false);
-
     const handleShowClick = () => setShowPassword(!showPassword);
     const { username } = useSelector(state => state.auth)
     const redux = useSelector((state) => state);
@@ -63,12 +59,6 @@ const Password = () => {
 
         <>
             <Toaster position='top-center' reverseOrder={false}></Toaster>
-
-
-
-
-
-
             <Flex
                 flexDirection="column"
                 width="100wh"
@@ -113,7 +103,7 @@ const Password = () => {
                                         </InputRightElement>
                                     </InputGroup>
                                     <FormHelperText textAlign="right">
-                                        <Link>forgot password?</Link>
+                                        <Link to={'/recovery'}>forgot password?</Link>
                                     </FormHelperText>
                                 </FormControl>
                                 <Button

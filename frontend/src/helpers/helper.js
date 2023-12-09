@@ -24,9 +24,9 @@ export async function authenticate(username) {
 }
 
 /** get User details */
-export async function getUser({ token }) {
+export async function getUser({ username }) {
     try {
-        const { data } = await axios.get(`/api/user?token=${token}`);
+        const { data } = await axios.get(`/api/user?username=${username}`);
         return { data };
     } catch (error) {
         return { error: "Password doesn't Match...!" }
@@ -68,7 +68,7 @@ export async function updateUser(response) {
     try {
 
         const token = await localStorage.getItem('token');
-        const data = await axios.put('/api/updateuser', response, { headers: { "Authorization": `Bearer ${token}` } });
+        const data = await axios.put(`/api/updateuser?token=${token}`, response);
 
         return Promise.resolve({ data })
     } catch (error) {

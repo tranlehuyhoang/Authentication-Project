@@ -1,6 +1,6 @@
 import { Toaster } from 'react-hot-toast';
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { usernameValidate } from '../helpers/validate'
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
@@ -16,7 +16,6 @@ import {
     InputLeftElement,
     chakra,
     Box,
-    Link,
     Avatar,
     FormControl,
     FormHelperText,
@@ -113,7 +112,7 @@ const Username = () => {
                 </Stack>
                 <Box>
                     New to us?{" "}
-                    <Link color="teal.500" href="#">
+                    <Link color="teal.500" to={'/register'}>
                         Sign Up
                     </Link>
                 </Box>

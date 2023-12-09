@@ -22,7 +22,7 @@ router.route('/verifyOTP').get(controller.verifyUser, controller.verifyOTP) // v
 
 
 // // /** PUT Methods */
-router.route('/updateuser').put(protect, controller.updateUser); // is use to update the user profile
+router.route('/updateuser').put(controller.updateUser); // is use to update the user profile
 router.route('/resetPassword').put(controller.verifyUser, controller.resetPassword); // use to reset password
 
 
