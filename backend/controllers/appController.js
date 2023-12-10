@@ -121,6 +121,27 @@ const getUser = asyncHandler(async (req, res) => {
         return res.status(500).send({ error: "Internal Server Error" });
     }
 });
+const getUserAvatar = asyncHandler(async (req, res) => {
+    // console.log(req.app.locals.OTP)
+    try {
+        const { username } = req.query;
+
+
+        const user = await UserModel.findOne({ username });
+
+        if (!user) {
+            return res.status(404).send({ error: "Couldn't Find the User" });
+        }
+
+        /** remove password from user */
+        const { profile, ...rest } = user.toObject();
+
+        return res.status(200).send(profile);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ error: "Internal Server Error" });
+    }
+});
 const updateUser = asyncHandler(async (req, res) => {
     try {
         const { token } = req.query;
@@ -193,6 +214,6 @@ const resetPassword = asyncHandler(async (req, res) => {
 });
 
 export {
-    register, login, getUser, verifyUser, updateUser, generateOTP, verifyOTP, resetPassword
+    register, login, getUser, verifyUser, updateUser, generateOTP, verifyOTP, resetPassword, getUserAvatar
 }
 

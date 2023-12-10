@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { usernameValidate } from '../helpers/validate'
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import { setUsername } from '../slices/authSlice';
+import { logout, setUsername } from '../slices/authSlice';
 import { FaUserAlt, FaLock } from "react-icons/fa";
 import {
     Flex,
@@ -25,6 +25,10 @@ import {
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 const Username = () => {
+    useEffect(() => {
+        dispatch(logout());
+
+    }, []);
     const [showPassword, setShowPassword] = useState(false);
 
     const handleShowClick = () => setShowPassword(!showPassword);

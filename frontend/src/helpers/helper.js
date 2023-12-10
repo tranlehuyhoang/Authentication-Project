@@ -112,3 +112,13 @@ export async function resetPassword({ username, password }) {
         return Promise.reject({ error })
     }
 }
+export async function getUserAvatar({ username }) {
+    try {
+        const { data } = await axios.get(`/api/getUserAvatar?username=${username}`);
+        return data
+    } catch (error) {
+        return { error: "Password doesn't Match...!" }
+
+
+    }
+}

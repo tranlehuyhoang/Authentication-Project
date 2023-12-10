@@ -3,7 +3,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useNavigate, Link } from 'react-router-dom';
 import { usernameValidate, passwordValidate, resetPasswordValidation } from '../helpers/validate.js'
 import { useEffect, useState } from 'react';
-import { registerUser, verifyPassword } from '../helpers/helper.js';
+import { registerUser, resetPassword, verifyPassword } from '../helpers/helper.js';
 import { useDispatch, useSelector } from 'react-redux'
 import {
     Flex,
@@ -24,6 +24,8 @@ import { FaUserAlt, FaLock } from "react-icons/fa";
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 const Reset = () => {
+    const { username } = useSelector(state => state.auth)
+
     const [showPassword, setShowPassword] = useState(false);
     const [showPasswordconfirm_pwd, setShowPasswordconfirm_pwd] = useState(false);
     const handleShowClick = () => setShowPassword(!showPassword);
@@ -39,10 +41,20 @@ const Reset = () => {
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async values => {
-            console.log(values)
+
+            let resetPromise = resetPassword({ username, password: values.password })
+
+            toast.promise(resetPromise, {
+                loading: 'Updating...',
+                success: <b>Reset Successfully...!</b>,
+                error: <b>Could not Reset!</b>
+            });
+
+            resetPromise.then(function () { navigate('/password') })
 
         }
     })
+
 
 
     return (

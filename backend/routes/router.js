@@ -15,6 +15,7 @@ router.route('/registerMail').post(registerMail); // send the email
 router.route('/login').post(controller.verifyUser, controller.login); // login in app
 
 // /** GET Methods */
+router.route('/getUserAvatar').get(controller.getUserAvatar) // user with username
 router.route('/user').get(controller.getUser) // user with username
 router.route('/generateOTP').get(controller.verifyUser, localVariables, controller.generateOTP) // generate random OTP
 router.route('/verifyOTP').get(controller.verifyUser, controller.verifyOTP) // verify generated OTP

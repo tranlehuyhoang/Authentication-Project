@@ -3,7 +3,7 @@ import { useFormik } from 'formik';
 import { useNavigate, Link } from 'react-router-dom';
 import { usernameValidate, passwordValidate } from '../helpers/validate.js'
 import { useEffect, useState } from 'react';
-import { registerUser, verifyPassword } from '../helpers/helper.js';
+import { getUserAvatar, registerUser, verifyPassword } from '../helpers/helper.js';
 import { useDispatch, useSelector } from 'react-redux'
 import {
     Flex,
@@ -24,13 +24,28 @@ import { FaUserAlt, FaLock } from "react-icons/fa";
 const CFaUserAlt = chakra(FaUserAlt);
 const CFaLock = chakra(FaLock);
 const Password = () => {
+
     const [showPassword, setShowPassword] = useState(false);
+    const [avatar, setAvatar] = useState('');
     const handleShowClick = () => setShowPassword(!showPassword);
     const { username } = useSelector(state => state.auth)
     const redux = useSelector((state) => state);
     console.log('redux', redux)
     console.log(username)
     const navigate = useNavigate();
+    useEffect(() => {
+        const fetchAvatar = async () => {
+            let avatar = await getUserAvatar({ username });
+            console.log(avatar);
+            setAvatar(avatar)
+            if (avatar.error) {
+                toast.error('User Not Found!')
+                navigate('/')
+            }
+        };
+
+        fetchAvatar();
+    }, []);
     const formik = useFormik({
         initialValues: {
             password: ''
@@ -73,8 +88,8 @@ const Password = () => {
                     justifyContent="center"
                     alignItems="center"
                 >
-                    <Avatar bg="teal.500" />
-                    <Heading color="teal.400">Welcome</Heading>
+                    <Avatar src={avatar || ''} bg="teal.500" />
+                    <Heading color="teal.400">Welcome {username}</Heading>
                     <Box minW={{ base: "90%", md: "468px" }}>
                         <form onSubmit={formik.handleSubmit}>
                             <Stack

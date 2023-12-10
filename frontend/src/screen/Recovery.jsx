@@ -62,7 +62,7 @@ const Recovery = () => {
     // handler of resend OTP
     function resendOTP() {
 
-        let sentPromise = generateOTP(token);
+        let sentPromise = generateOTP(username);
 
         toast.promise(sentPromise,
             {

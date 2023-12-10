@@ -178,7 +178,7 @@ const Profile = () => {
                                 <FormControl>
 
                                     <FormHelperText textAlign="right">
-                                        <Link>forgot password?</Link>
+                                        <Link to={'/recovery'}>forgot password?</Link>
                                     </FormHelperText>
                                 </FormControl>
                                 <Button
@@ -196,8 +196,8 @@ const Profile = () => {
                 </Stack>
                 <Box>
                     New to us?{" "}
-                    <Link color="teal.500" to={'/register'}>
-                        Sign Up
+                    <Link color="teal.500" to={'/'}>
+                        Log out
                     </Link>
                 </Box>
             </Flex>

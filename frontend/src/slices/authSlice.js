@@ -20,6 +20,7 @@ const authSlice = createSlice({
         },
         logout: (state, action) => {
             state.username = '';
+            localStorage.removeItem('token');
 
         },
     },
